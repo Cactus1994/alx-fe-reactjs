@@ -13,7 +13,7 @@ const EditRecipeForm = ({ recipe }) => {
             title,
             description
         };
-        updateRecipe(updatedRecipe);
+        updateRecipe(recipe);
     };
 
     return (
