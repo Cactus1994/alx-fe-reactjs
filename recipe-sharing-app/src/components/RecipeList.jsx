@@ -1,23 +1,20 @@
-import { useRecipeStore } from "./recipeStore";
-import React from "react";
-import { Link } from 'react-router-dom';
-import AddRecipeForm from "./AddRecipeForm";
+import React, { useEffect } from 'react';
+import { useRecipeStore } from './recipeStore'; // Adjust the path if necessary
 
 const RecipeList = () => {
-    const recipes = useRecipeStore(state => state.recipes);
+  const { filteredRecipes, filterRecipes, searchTerm } = useRecipeStore();
 
-    return (
-      <div>
-        <ul>
-            {recipes.map(recipe => (
-                <li key={recipe.id}>
-                    <Link to={`/recipes/${recipe.id}`}>{recipe.title}</Link>
-                </li>
-            ))}
-        </ul>
-        <AddRecipeForm />
-      </div>
-    );
-  };
+  useEffect(() => {
+    filterRecipes(); // Filter recipes whenever the search term changes
+  }, [searchTerm, filterRecipes]);
 
-export default RecipeList
+  return (
+    <div>
+      {filteredRecipes.map((recipe) => (
+        <div key={recipe.id}>{recipe.title}</div>
+      ))}
+    </div>
+  );
+};
+
+export default RecipeList;
