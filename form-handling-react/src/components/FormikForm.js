@@ -1,70 +1,87 @@
-// src/components/FormikForm.js
+// src/formikForm.js
+
 import React from 'react';
-import { useFormik } from 'formik';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
+import './app.css'; // Assuming you're using app.css for styles
+
+// Validation Schema using Yup
+const validationSchema = Yup.object({
+  firstName: Yup.string()
+    .min(2, 'Must be at least 2 characters')
+    .max(20, 'Must be 20 characters or less')
+    .required('First Name is required'),
+  lastName: Yup.string()
+    .min(2, 'Must be at least 2 characters')
+    .max(20, 'Must be 20 characters or less')
+    .required('Last Name is required'),
+  email: Yup.string()
+    .email('Invalid email address')
+    .required('Email is required'),
+  password: Yup.string()
+    .min(6, 'Password must be at least 6 characters')
+    .required('Password is required'),
+});
 
 const FormikForm = () => {
-  const formik = useFormik({
-    initialValues: {
-      username: '',
-      email: '',
-      password: ''
-    },
-    validationSchema: Yup.object({
-      username: Yup.string().required('Username is required'),
-      email: Yup.string().email('Invalid email address').required('Email is required'),
-      password: Yup.string()
-        .min(6, 'Password must be at least 6 characters')
-        .required('Password is required')
-    }),
-    onSubmit: (values) => {
-      console.log('Form Submitted:', values);
-      alert('Registration successful!');
-    }
-  });
-
   return (
-    <form onSubmit={formik.handleSubmit}>
-      <h1>Register</h1>
+    <div className="form-container">
+      <h2>Registration Form</h2>
+      <Formik
+        initialValues={{
+          firstName: '',
+          lastName: '',
+          email: '',
+          password: '',
+        }}
+        validationSchema={validationSchema}
+        onSubmit={(values, { setSubmitting }) => {
+          setTimeout(() => {
+            alert(JSON.stringify(values, null, 2));
+            setSubmitting(false);
+          }, 400);
+        }}
+      >
+        {({ isSubmitting }) => (
+          <Form>
+            {/* First Name */}
+            <div className="form-field">
+              <label htmlFor="firstName">First Name</label>
+              <Field type="text" name="firstName" />
+              <ErrorMessage name="firstName" component="div" className="error" />
+            </div>
 
-      <label>Username:</label>
-      <input
-        type="text"
-        name="username"
-        value={formik.values.username}
-        onChange={formik.handleChange}
-        onBlur={formik.handleBlur}
-      />
-      {formik.touched.username && formik.errors.username ? (
-        <div className="error">{formik.errors.username}</div>
-      ) : null}
+            {/* Last Name */}
+            <div className="form-field">
+              <label htmlFor="lastName">Last Name</label>
+              <Field type="text" name="lastName" />
+              <ErrorMessage name="lastName" component="div" className="error" />
+            </div>
 
-      <label>Email:</label>
-      <input
-        type="email"
-        name="email"
-        value={formik.values.email}
-        onChange={formik.handleChange}
-        onBlur={formik.handleBlur}
-      />
-      {formik.touched.email && formik.errors.email ? (
-        <div className="error">{formik.errors.email}</div>
-      ) : null}
+            {/* Email */}
+            <div className="form-field">
+              <label htmlFor="email">Email</label>
+              <Field type="email" name="email" />
+              <ErrorMessage name="email" component="div" className="error" />
+            </div>
 
-      <label>Password:</label>
-      <input
-        type="password"
-        name="password"
-        value={formik.values.password}
-        onChange={formik.handleChange}
-        onBlur={formik.handleBlur}
-      />
-      {formik.touched.password && formik.errors.password ? (
-        <div className="error">{formik.errors.password}</div>
-      ) : null}
+            {/* Password */}
+            <div className="form-field">
+              <label htmlFor="password">Password</label>
+              <Field type="password" name="password" />
+              <ErrorMessage name="password" component="div" className="error" />
+            </div>
 
-      <button type="submit">Register</button>
-    </form>
+            {/* Submit Button */}
+            <div className="form-field">
+              <button type="submit" disabled={isSubmitting}>
+                Register
+              </button>
+            </div>
+          </Form>
+        )}
+      </Formik>
+    </div>
   );
 };
 
